@@ -1,0 +1,20 @@
+These notes are on how to build the firmware as supplied by dlink.
+It can be downloaded here:
+https://dlink-gpl.s3.amazonaws.com/GPL2000202/DCS-6100LH_v1.x_GPLCode.tar.gz
+
+I have successfully built (but not deployed) this firmware on ubuntu 18.04.
+
+The following packages needed to be install in addition to what is written in the supplied build instructions:
+python
+unzip
+
+
+Need to update parition.ini in
+/opt/DCS-6100LH
+
+The supplied sizes will result in a build that doesn't fit.
+
+TODO: Add parition.ini descriptions.
+
+Note that the firmware update supplied from dlink does not update the whole system, only /mnt/mtd (firmware) and /mydlink (application)
+
