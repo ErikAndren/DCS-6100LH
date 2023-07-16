@@ -1,0 +1,136 @@
+The application supplied by D-link relies heavily on /mnt/conf/SystemConfig.ini.
+It has a backup called /mnt/conf/SystemConfig.ini_backup which is also used by the main application.
+
+This configuration (and application?) is used by multiple products and not all parameters are applicable for the DCS-6100.
+
+What follows is an investigation what the different parameters do:
+More work is needed on understanding what the different parameters do.
+
+[System]
+TimeZone = 0
+VideoMode = 0
+bFlip = 0
+bMirror = 0
+Rotate = 0
+IrcutEnable = 1
+InVol = 100
+OutVol = 100
+IrledDisable = 0
+DevAccount = admin
+DevPassWord = admin
+Mac = 12:32:45:78:45:22
+Vendor = QW9uaQ== # Base64 encoded, decodes to Aoni
+DevModel = QU9OSV9JUEM= # AONI_IPC
+FactoryDefault = 1
+ResetWifi = 0
+IRcutSeq = 1
+DNlux = 10
+
+[Net]
+Dhcp = on # Instructs application launch udhcpc, a dhcp client
+WIFI_SECURITY_TYPE = 4
+WIFI_SSID = XXX # base64 encoded ssid to connect to, will generate a wpa_supplicant.conf file
+WIFI_PWD = XXX # base64 encoded password of the ssid to connect to, will generate a wpa_supplicant.conf file
+
+[Production]
+Enable = 0
+
+[Lux]
+adc_print_enable = 0
+minLuxAdc = 0
+maxLuxAdc = 0
+
+[Led]
+led_switch = 1
+red_enable = 1
+blue_enable = 1
+green_enable = 1
+
+[Preset]
+point_x_0 = -1
+point_y_0 = -1
+point_x_1 = -1
+point_y_1 = -1
+point_x_2 = -1
+point_y_2 = -1
+point_x_3 = -1
+point_y_3 = -1
+point_x_4 = -1
+point_y_4 = -1
+point_x_5 = -1
+point_y_5 = -1
+point_x_6 = -1
+point_y_6 = -1
+point_x_7 = -1
+point_y_7 = -1
+point_x_8 = -1
+point_y_8 = -1
+point_x_9 = -1
+point_y_9 = -1
+point_x_10 = -1
+point_y_10 = -1
+point_x_11 = -1
+point_y_11 = -1
+
+[AlarmPlan]
+Alarm_Enable = 0
+MDLevel = 1
+active1 = 0
+day_flag1 = 0
+start_time1 = 0
+end_time1 = 0
+active2 = 0
+day_flag2 = 0
+start_time2 = 0
+end_time2 = 0
+active3 = 0
+day_flag3 = 0
+start_time3 = 0
+end_time3 = 0
+active4 = 1
+day_flag4 = 127
+start_time4 = 0
+end_time4 = 86400
+alarm_interval = 60
+
+[OSD]
+OsdDisplayEnable = 1 # Toggles whether to draw text on the generated image
+OsdTimeStyle = 3 # Toggles different styles of OSD
+OsdTime12or24format = 24
+
+[AudioDetect]
+audio_detect_enable = 0 # Enables audio detection
+audio_record_enable = 1
+trigger_db = 60
+audioInterval = 60
+
+[Mydlink] # Handles configuration related to the mydlink app
+register_st = 1
+oob_changed = 0
+md_sensitivity = 70
+md_mask = FFFFFFFFFFFFFFFFFFFFFFFFF
+pirvacy_mode = 0
+light_status = 1
+flicker = 0
+pin_code = MzUxMDE5
+Wifi_ap_pwd = mf74vpdp # Password required when entering setup or recovery mode 
+
+[Onvif] # Onvif related settings. I have not been able to connect via onvif
+OnvifPsw_0 = 351019
+OnvifUser_0 = admin
+
+[HumanDetect]
+enable = 0
+
+[PIR]
+pir_1_on_off = 0
+pir_2_on_off = 0
+pir_3_on_off = 0
+pir_sen_level = 0
+pir_sen_percentage = 0
+
+[LIGHT]
+Enable = 0
+Lightness = 50
+Duration = 30
+
