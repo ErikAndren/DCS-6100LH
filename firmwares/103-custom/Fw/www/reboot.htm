@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script>
+var seconds=120;
+function timer()
+{
+seconds--;
+left_seconds.innerHTML='&nbsp;&nbsp;'+seconds+'s';
+if (!seconds) {
+	alert('升级成功');
+	top.location='about:blank';
+}
+else
+setTimeout('timer()',1000);	
+}
+function body_onload()
+{
+seconds=120;
+left_seconds.innerHTML='&nbsp;&nbsp;'+seconds+'s';
+setTimeout('timer()',1000);
+}
+</script>
+</head>
+<body onLoad="body_onload()" style='background-color:linen'>
+<table class="layout-grid-frame" cellspacing="0" cellpadding="0">
+<tr>
+<td class="tableClass"><table width="100%" class="summaryTable">
+<tr valign="top">
+<td style="font-size:40px;padding-left:10px;padding-right:10px;padding-top:20px;padding-bottom:20px;">
+<div>
+<div  style="float:left;"><script>document.write("Updating,Please waiting");</script></div>
+<div id="left_seconds"  style="float:left;"></div>
+</div>
+</td>
+</tr>
+</table></td>
+</tr>
+</table>
+</body>
+</html>
