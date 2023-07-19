@@ -144,12 +144,12 @@ cp /mnt/mtd/hosts /var/conf/
 echo 3 > /proc/sys/vm/drop_caches > /dev/null
 /etc/init.d/S50telnet stop
 echo 2048 > /proc/sys/vm/min_free_kbytes
-#telnetd&
+
 ############################system init end####################################
 
 ############################application start####################################
 cd /
-/mnt/mtd/socket_system_server &
+/mnt/mtd/socket_system_server > /var/log/socket_system_server.log 2>&1 & 
 
 echo "sleep 3 seconds wait sd card!!!"
 sleep 3
@@ -160,7 +160,17 @@ if [ "$exit_cmd" == "q" ] ; then
         exit
 fi
 
-/mnt/mtd/daemon &
+/mnt/mtd/daemon > /var/log/daemon.log 2>&1 &
 /mnt/mtd/auto_web_recover.sh &
 date -s "2000-1-1 00:00:00"
+
+# Parse if Telnet daemon should be started
+if grep -q -i "Telnet" /mnt/conf/SystemConfig.ini; then
+        start_telnet=$(grep -i Telnet /mnt/conf/SystemConfig.ini | awk {'print($3)'})
+        if [[ $start_telnet -eq 1 ]]; then
+                echo "Starting telnet"
+                /etc/init.d/S50telnet start
+        fi
+fi
+
 ############################application end####################################
