@@ -33,7 +33,7 @@ WIFI_SSID = XXX # base64 encoded ssid to connect to, will generate a wpa_supplic
 WIFI_PWD = XXX # base64 encoded password of the ssid to connect to, will generate a wpa_supplicant.conf file
 
 [Production]
-Enable = 0
+Enable = 0 # When enabled, starts up camera with hosting its own network and not starting the mydlink app
 
 [Lux]
 adc_print_enable = 0
