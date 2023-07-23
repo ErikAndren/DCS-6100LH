@@ -1,13 +1,12 @@
 These notes are on how to build the firmware as supplied by dlink.
-It can be downloaded here:
+Build environment can be downloaded here:
 https://dlink-gpl.s3.amazonaws.com/GPL2000202/DCS-6100LH_v1.x_GPLCode.tar.gz
 
 I have successfully built (but not deployed) this firmware on ubuntu 18.04.
 
-The following packages needed to be install in addition to what is written in the supplied build instructions:
+The following packages needed to be install in addition to what is written in the build instructions:
 python
 unzip
-
 
 Need to update parition.ini in
 /opt/DCS-6100LH
@@ -18,3 +17,11 @@ TODO: Add parition.ini descriptions.
 
 Note that the firmware update supplied from dlink does not update the whole system, only /mnt/mtd (firmware) and /mydlink (application)
 
+Mapping of partitions is as follows:
+16384k@0(global),320k@0k(boot),2304k@320k(kernel),3584k@2624k(rootfs),7744k@6208k(userdata),2048k@13952k(userdata2),384k@16000k(userdata3)
+
+
+/dev/mtdblock3 / rootfs # Root file system, never updated via firmware update
+/dev/mtdblock4 /mnt/mtd userdata # Local applications, updated via firmware
+/dev/mtdblock5 /mydlink userdata2 # Mydlink application, updated via firmware
+/dev/mtdblock6 /mnt/conf userdata3 # Private data, contains privata data such as password, SystemConfig.ini, private keys etc.
