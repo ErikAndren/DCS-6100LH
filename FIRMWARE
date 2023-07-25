@@ -4,7 +4,7 @@ Encryption of firmware can be done by executing the following command:
 openssl enc -aes-128-cbc -k a0n1ipc -p -in DCS6100LHAx_FW103B03.tar -out DCS6100LHAx_FW103B03.bin
 
 Decryption can be done by:
-openssl enc -d -aes-128-cbc -k a0n1ipc -p -in  DCS6100LHAx_FW103B03.bin -out DCS6100LHAx_FW103B03.tar
+openssl enc -d -aes-128-cbc -k a0n1ipc -p -in DCS6100LHAx_FW103B03.bin -out DCS6100LHAx_FW103B03.tar
 
 Version of openssl to be used:
 OpenSSL 1.0.2l  25 May 2017 (Library: OpenSSL 1.0.2j  26 Sep 2016)
