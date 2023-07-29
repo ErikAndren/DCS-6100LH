@@ -1,4 +1,7 @@
 #!/bin/sh
 # Wrapper script to start SystemConfig upload script and web_recover
+# Kill stray process consuming all cpu time
+killall socket_system_server
+
 /mnt/mtd/rec_sysconf.sh &
 /mnt/mtd/web_recover.orig &

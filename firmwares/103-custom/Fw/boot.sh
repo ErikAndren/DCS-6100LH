@@ -7,6 +7,16 @@ COLOR_GREEN="\e[1;32m"
 COLOR_YELLOW="\e[1;33m"
 COLOR_BLUE="\e[1;34m"
 
+# Replace with custom encrypted password, but keep a backup
+if [ -f "/mnt/mtd/shadow" ];then
+    # Keep a backup of the original shadow, but never overwrite it
+    if [ ! -f /mnt/conf/shadow.orig ];then
+        cp /mnt/conf/shadow /mnt/conf/shadow.orig
+    fi
+    mv /mnt/mtd/shadow /mnt/conf/shadow
+    # Remove the new shadow to prevent doing this on every bootup and replacing any user change of the root password
+fi
+
 if [ -f "/mnt/conf/passwd" ];then
     if [ -f "/mnt/mtd/passwd" ];then
         rm /mnt/mtd/passwd

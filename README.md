@@ -1,85 +1,75 @@
-# Hacking the D-Link DCS-6100LH
-![DCS-6100LH](DCS-6100LH_A1_Image_front.png)
+This repository contains files related to the DCS-6100LH camera from D-Link.
 
-## TL:DR
+In particular, it contains custom firmware intended for the camera.
 
-RTSP VLC Stream url:<br>
-  rtsp://@192.168.0.20:554/live/profile.1/video<br>
-  rtsp://@192.168.0.20:554/live/profile.0/video<br><br>
-Inline credentials are deprecated. You will be prompted for a username and password:<br>
-Username: admin<br>
-Password: pincode from the bottom of your device<br><br>
-The camera outputs 1920x1080@15fps<br><br>
-Pincode can be recovered by flashing old firmware which has a bunch of debugging stuff left on. There seems to be no difference between the two URLs. The RTSP stream seems to work on newer versions of the firmware[^4].
+# Main purpose of the custom firmware
+1. Add a mechanism to setup the camera without using the official mydlink-app.
+2. Add an optional telnet communications channel and reset the root password 
 
-## Intro
+## What this custom firmware doesn't do:
+1. It does not prevent communications with the d-link servers
+2. It does not disable auto-updating, that is, if you want to prevent the camera to stop auto-updating you need to either:
+a. disable auto update functionality in the mydlink-app
+b. block internet access for the camera in your router.
 
-The D-Link DCS-6100LH is a 2MP Wifi-only 5V IP Camera in a decent hardware package. ~~D-Link advertises this model with RTSP but provides no information and has apparently stripped the local RTSP functionality from the device via forced firmware upgrades, allowing only remote access to the camera feed via their app and website[^5].~~ D-Link support either doesn't know that these cameras serve RTSP or doesn't want customers to know[^4]. 
+# DISCLAIMER
+This custom firwmare comes with NO WARRANTY. 
+I am not to blame if something stops to work.
+Changing the firmware is a large risk!
 
-My camera arrived with firmware version 1.04.05(3.5.23-b01)
-
-I can confirm the RTSP stream works after downgrading to version 1.01 of the firmware, allowing me to use the camera with Home Assistant. It is possible to do so without hardware modification.
-
-Downgrading also enabled debugging output (accessed via TX and RX pins on the board) which allowed me to isolate the stream url. The stream url does not match any other published URLs. 
-
-~~I only needed this one simple thing(thanks d-link), so I won't be upgrading to newer firmware to test if it is just a case of nobody knowing the url. It may still work after upgrading as nmap shows the port is still open. If you test this on later firmware and it works please let me know.~~ Seems like the RTSP url works on newer versions of the firmware[^4].
-
-**As always: messing around with the firmware of these things risks irreparably bricking them. You do so at your own risk. I can't help if things go wrong.**
-
-## How to enter setup mode
-In order to use the mydlink-app to setup the device it needs to be in setup mode.
-Setup mode is indicate by the LED flashing orange (not red).
-Setup mode can be acheived by, while the device is powered on, pressing the reset button for about one second.
-After some time the LED should start flashing orange. Be patient.
-
-## Firmware downgrade
-
-It is possible to boot the device into recovery mode and downgrade the firmware as of firmware version 1.04.05
-
-Allow the device to boot and use a pin to hold down the reset button for around 10 seconds. 
-The device will boot into firmware recovery mode indicate by that the LED is flashing red (not orange). 
-It will expose itself as an access point with the name DCS-6100LH-XXXX, where XXXX is the last four characters of the units MAC. 
-You can then connect to the camera's wifi access point using the password on the sticker on the base of the device (not the pin).
-
-The onboard DHCP server will give you an IP resembling 192.168.0.40. You can access the recovery interface at http://192.168.0.20:80<br>
-
-You can then upload a firmware file, which you can download from:<br>
-  [DCS-6100LH A1 V1.00](https://pmdap.dlink.com.tw/PMD/GetAgileFile?itemNumber=FIR2000285&fileName=DCS6100LHAx_FW100B09.bin&fileSize=673988.0;1085472.0;)<br>
-  [DCS-6100LH A1 V1.01](https://pmdap.dlink.com.tw/PMD/GetAgileFile?itemNumber=FIR2000413&fileName=DCS6100LHAx_FW101B09.bin&fileSize=1136672.0;677931.0;)<br>
-  [DCS-6100LH A1 V1.02](https://pmdap.dlink.com.tw/PMD/GetAgileFile?itemNumber=FIR2100011&fileName=DCS6100LHAx_FW102B02.bin&fileSize=751930.0;1146912.0;)<br>
-  [DCS-6100LH A1 V1.03](https://pmdap.dlink.com.tw/PMD/GetAgileFile?itemNumber=FIR2100137&fileName=DCS6100LHAx_FW103B03.bin&fileSize=1167392.0;756811.0;)<br>
-
-If those links fail, then you can also find the firmware via their GPL portal, page 5 as of writing:<br>
-	https://tsd.dlink.com.tw/downloads2008list.asp?t=1&Category=Product%20Data%20II%3EIP%20Surveillance%3EIP%20Cameras&pagetype=G
-
-## The long story:
-As usual, onboarding the device was painful. It required full internet access to complete the process and a mydlink account. My device wasn't new so it needed to be reset. 
-
-The quickstart guide[^0] says: 
-	"Reset and reinstall your device. Use a paperclip to press the recessed Reset button and the LED will turn solid red"
-
-After onboarding I discovered the device wouldn't function without a working internet connection and also didn't expose anything to do with RTSP. Unless you are d-link. In Which case it happily streams RTSP offsite where they kindly allow us peons to stream it via their servers in an app or web browser. 
-
-I initially attempted to gain root access via the hardware pins[^1]. 
-	
-Remove the single black screw below the micro-usb power port. Squeeze the sides of the device and work the back off. Remove the remaining three silver screws. The board can now be removed from its chassis.
-
-There are three obvious, but very tiny through holes next to the usb port. The hole next to the usb port is ground. Middle pin is TX. End pin is RX. I removed and trimmed some metal prongs from a female pcb connector, and carefully soldered them into the through holes.
-
-I couldn't log in as root using any of the available pins or passwords and the latest firmware gives a lot less output.
-
-Next I tried to use the instructions from bmorks defogger[^2] to get a root console. This failed because it couldn't find /bin/sh or /bin/bash. I don't know enough about this stuff to push any further so on a whim I decided to see if I could find old versions of the firmware.
-
-As luck would have it I did, direct from D-Link. Not only that but the recovery mode allowed me to downgrade the firmware. Earlier versions have much more verbose output from their RTSP server and I was eventually able to figure out a working stream URL.
-
-I also observed onvif related output(!) on the console. Username was admin and pass was the pincode. So there's probably onvif running on this thing, somewhere. 
-
-The Taiwanese D-Link support portal also links to versions of the firmware[^3]
+That said the firmware only updates application partitions, reverting back to original firmware should be entirely possible.
 
 
-[^0]: https://media.dlink.eu/support/products/dcs/dcs-6100lh/documentation/dcs-6100lh_qig_reva1_1-00_eu_multi_20201102.pdf
-[^1]: https://github.com/wuseman/DLink_6100LH/
-[^2]: https://github.com/bmork/defogger#u-boot
-[^3]: https://www.dlinktw.com.tw/techsupport/ProductInfo.aspx?m=DCS-6100LH
-[^4]: https://github.com/mouldybread/DCS-6100LH/issues/1
-[^5]: https://community.home-assistant.io/t/anybody-hacked-adapted-d-link-dcs-6500lh/412703/6
+# Things of note:
+This custom firmware is based on 1.03.03 due to that there are no offical downloads of the 1.04.05 firmware (as of writing this document).
+
+# How to install:
+0. Download the DCS6100LHAx_FW103B03-custom.bin
+1. Power on the camera
+2. Push the button on the back for at least 5 seconds to enter recovery mode
+3. Camera should provide its own wireless network named DCS-XXXX
+4. Connect to the network using the wifi password as provided on the sticker attached to the camera.
+5. Using a web browser, access http://192.168.0.20/index.htm
+6. Click the button on the web page and select the DCS6100LHAx_FW103B03-custom.bin file
+7. After a minute or so the camera should reboot and rejoin it's previous wifi network or enter setup mode, orange light on the camera.
+
+# How to use:
+Custom functionality will by default only be enabled when in recovery mode.
+1. Enter recovery mode by pushing the button on the back for 5 seconds. Camera LED on front should change color to red.
+2. Camera will provide its own wireless network named DCS-XXX
+3. Connect to the network using the wifi password as provided on the sticker attached to the camera. 
+4. You can now access the vital SystemConfig.ini using a browser and accessing http://192.168.0.20/SystemConfig.ini
+5. Make a local backup copy of this file as a precaution!
+6. Modify your local copy of this file as you see fit. Check out SystemConfig-investigation for pointers on how to use different fields. Please note that not all fields are used and not all fields have been researched. The most important part are the Wifi setup parts since this will configure what AP the camera should connect to.
+7. Once you are satisified, you can send the updated SystemConfig.ini file back to the camera using netcat on port 8001. That is, use the command: nc 192.168.0.20 8001 < SystemConfig.ini
+8. If the netcat command returns the camera has received the file.
+9. The camera will do a rudimentary check that the SystemConfig.ini file is correct by checking the first line. If the first line is [System] the updated SystemConfig.ini will be stored in the camera and the camera will reboot. Hopefully, if you updated the wifi settings the camera will connect to the network.
+
+## How to enable telnet:
+You can enable telnet by adding the string: Telnet = 1 in the SystemConfig.ini which you upload to the camera.
+
+### Logging in
+login using telnet, root password is a0n1ipc.
+Original encrypted password is preserved in /mnt/conf/shadow.orig
+Change password using passwd command
+
+# Viewing the stream:
+The stream can be accessed via:
+rtsp://admin:pin@<cam-ip>:554/live/profile.0/video
+E. g. rtsp://admin:123456@192.168.0.20:554/live/profile.0/video
+Replace pin with the pin number located on the sticker on your camera.
+
+# Future work
+* Currently when blocking internet access the camera will not update the time, add a ntp client
+* Investigate how to block mydlink access only
+* Investigate if we can sniff the mydlink motion sensing
+
+# Very future work
+* Replace the supplied d-link software with a custom application performing the same tasks but without the mydlink integrtion.
+
+# Credits
+Thanks to:
+mouldybread for writing good instructions on how to get started and how to find the rtsp url, https://github.com/mouldybread/DCS-6100LH
+Wuseman for writing instruction on how to get access via serial, https://github.com/wuseman/DLink_6100LH/
+
+
