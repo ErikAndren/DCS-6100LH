@@ -1,3 +1,6 @@
+DO NOT USE THIS FORK.
+Currently there is a bug reported which I cannot replicate where the netcat session does not spawn on the camera.
+
 This repository contains files related to the DCS-6100LH camera from D-Link.
 
 In particular, it contains custom firmware intended for the camera.
